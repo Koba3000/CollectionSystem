@@ -8,11 +8,18 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
     protected $commands = [
-        AssignPoints::class,
+        \App\Console\Commands\AssignPoints::class,
     ];
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('assign:points');
+        $schedule->command('assign:points')->daily();
+    }
+
+    protected function commands()
+    {
+        $this->load(__DIR__.'/Commands');
+
+        require base_path('routes/console.php');
     }
 }
