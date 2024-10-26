@@ -2,9 +2,14 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CollectionController;
 
 Route::get('/', function () {
     return view('main');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/collections', [CollectionController::class, 'index'])->name('collections.index');
 });
 
 Route::get('/home', function () {
