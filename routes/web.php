@@ -8,6 +8,11 @@ Route::get('/', function () {
     return view('main');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/collections/create', [CollectionController::class, 'create'])->name('collections.create');
+    Route::post('/collections', [CollectionController::class, 'store'])->name('collections.store');
+});
+
 Route::get('/collections/{collection_id}', [CollectionController::class, 'show'])->name('collections.show')->middleware('auth');
 
 Route::post('/collections/{collection_id}/contribute', [CollectionController::class, 'contribute'])->name('collections.contribute');

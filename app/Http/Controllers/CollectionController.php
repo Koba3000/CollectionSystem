@@ -51,4 +51,29 @@ class CollectionController extends Controller
         }
     }
 
+    public function create()
+    {
+        $user = auth()->user();
+        return view('collections.create', compact('user'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'goal_amount' => 'required|integer|min:1',
+            'end_date' => 'required|date|after:today',
+        ]);
+
+        $collection = new Collection();
+        $collection->name = $request->name;
+        $collection->goal_amount = $request->goal_amount;
+        $collection->current_amount = 0;
+        $collection->end_date = $request->end_date;
+        $collection->user_id = auth()->id();
+        $collection->save();
+
+        return redirect()->route('collections.index')->with('success', 'Collection created successfully!');
+    }
+
 }
