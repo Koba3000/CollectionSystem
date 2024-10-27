@@ -9,6 +9,10 @@ class Collection extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'collection_id';
+    public $incrementing = true;
+    protected $keyType = 'int';
+
     protected $fillable = [
         'name',
         'goal_amount',
