@@ -10,13 +10,21 @@
 
 <!-- Navigation Bar -->
 <nav class="bg-white p-4 shadow-md">
-    <div class="container mx-auto flex justify-end">
-        @if (auth()->check())
-            <span class="text-gray-700 text-sm mr-4"> {{ auth()->user()->name }} (Points: {{ auth()->user()->points }})</span>
-            <a href="{{ route('logout') }}" class="text-gray-700 text-sm hover:text-gray-900">Log out</a>
-        @else
-            <a href="{{ route('login') }}" class="text-gray-700 text-sm hover:text-gray-900 mr-4">Log in</a>
-        @endif
+    <div class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center space-x-4">
+            <a href="/collections" class="text-gray-700 text-sm hover:text-gray-900">Collections</a>
+        </div>
+        <div class="flex items-center space-x-4">
+            @if (auth()->check())
+                <span class="text-gray-700 text-sm"> {{ auth()->user()->name }} (Points: {{ auth()->user()->points }})</span>
+                <form method="POST" action="{{ route('logout') }}" class="inline">
+                    @csrf
+                    <button type="submit" class="text-gray-700 text-sm hover:text-gray-900">Log out</button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="text-gray-700 text-sm hover:text-gray-900">Log in</a>
+            @endif
+        </div>
     </div>
 </nav>
 

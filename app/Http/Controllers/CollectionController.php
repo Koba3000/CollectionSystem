@@ -31,24 +31,29 @@ class CollectionController extends Controller
 
     public function contribute(Request $request, $collection_id)
     {
+        $collection = Collection::findOrFail($collection_id);
+
+        // Check if the collection is outdated
+        if ($collection->end_date < now()) {
+            return redirect()->route('collections.show', $collection_id)
+                ->with('error', 'This collection is no longer accepting contributions.');
+        }
+
+        // Proceed with the contribution logic
         $request->validate([
-            'points' => 'required|integer|min:1'
+            'points' => 'required|integer|min:1|max:' . auth()->user()->points,
         ]);
 
-        $collection = Collection::findOrFail($collection_id);
+        // Deduct points from the user and add to the collection
         $user = auth()->user();
+        $user->points -= $request->points;
+        $user->save();
 
-        if ($user->points >= $request->points) {
-            $user->points -= $request->points;
-            $user->save();
+        $collection->current_amount += $request->points;
+        $collection->save();
 
-            $collection->current_amount += $request->points;
-            $collection->save();
-
-            return redirect()->route('collections.show', $collection->collection_id)->with('success', 'Points contributed successfully!');
-        } else {
-            return redirect()->back()->withErrors(['points' => 'You do not have enough points.']);
-        }
+        return redirect()->route('collections.show', $collection_id)
+            ->with('success', 'Thank you for your contribution!');
     }
 
     public function create()

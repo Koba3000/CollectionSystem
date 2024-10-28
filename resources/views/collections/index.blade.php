@@ -10,22 +10,33 @@
 
 <!-- Navigation Bar -->
 <nav class="bg-white p-4 shadow-md mb-6">
-    <div class="container mx-auto flex justify-end">
-        @if (Route::has('login'))
-            <div class="top-right links">
-                @auth
-                    <a href="{{ url('/home') }}" class="text-gray-700 text-sm hover:text-gray-900">Home</a>
-                @else
-                    <a href="{{ route('login') }}" class="text-gray-700 text-sm hover:text-gray-900 mr-4">Log in</a>
-                @endauth
-            </div>
-        @endif
+    <div class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center space-x-4">
+            <a href="/collections" class="text-gray-700 text-sm hover:text-gray-900">Collections</a>
+        </div>
+        <div class="flex items-center space-x-4">
+            @if (auth()->check())
+                <span class="text-gray-700 text-sm"> {{ auth()->user()->name }} (Points: {{ auth()->user()->points }})</span>
+                <form method="POST" action="{{ route('logout') }}" class="inline">
+                    @csrf
+                    <button type="submit" class="text-gray-700 text-sm hover:text-gray-900">Log out</button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="text-gray-700 text-sm hover:text-gray-900">Log in</a>
+            @endif
+        </div>
     </div>
 </nav>
 
 <!-- Content -->
 <div class="container mx-auto">
-    <h1 class="text-4xl font-semibold text-center mb-8 text-gray-800">Collections</h1>
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="text-4xl font-semibold text-gray-800">Collections</h1>
+        <a href="/collections/create" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Add New Collection
+        </a>
+    </div>
+
     <div class="overflow-x-auto">
         <table class="table-auto w-full bg-white shadow-lg rounded-lg border border-gray-200">
             <thead>
@@ -39,8 +50,9 @@
             </thead>
             <tbody class="text-gray-700 text-md">
             @foreach($collections as $collection)
-                <tr class="border-b border-gray-200 hover:bg-gray-50
-                    {{ $collection->end_date < \Carbon\Carbon::now() ? 'bg-red-100' : 'bg-white' }}">
+                <tr class="border-b border-gray-200 hover:bg-gray-50 cursor-pointer
+                    {{ $collection->end_date < \Carbon\Carbon::now() ? 'bg-red-100' : 'bg-white' }}"
+                    onclick="window.location.href='/collections/{{ $collection->collection_id }}'">
                     <td class="px-6 py-4">{{ $collection->name }}</td>
                     <td class="px-6 py-4">{{ $collection->end_date->format('Y-m-d') }}</td>
                     <td class="px-6 py-4">{{ $collection->goal_amount }}</td>
