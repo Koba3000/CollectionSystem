@@ -3,22 +3,13 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\Collection;
+use App\Observers\CollectionObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
+    public function boot()
     {
-        //
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
-    {
-        //
+        Collection::observe(CollectionObserver::class);
     }
 }
